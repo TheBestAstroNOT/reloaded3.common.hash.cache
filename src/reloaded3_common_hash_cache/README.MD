@@ -1,4 +1,4 @@
-# reloaded3_common_hash_cache
+# reloaded3.common.hash.cache
 
 [![Crates.io](https://img.shields.io/crates/v/reloaded3_common_hash_cache.svg)](https://crates.io/crates/reloaded3_common_hash_cache)
 [![Docs.rs](https://docs.rs/reloaded3_common_hash_cache/badge.svg)](https://docs.rs/reloaded3_common_hash_cache)
