@@ -1,0 +1,24 @@
+[package]
+name = "reloaded3_common_hash_cache-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.reloaded3_common_hash_cache]
+path = "../reloaded3_common_hash_cache"
+
+[[bin]]
+name = "fuzz_example"
+path = "fuzz_targets/fuzz_example.rs"
+test = false
+doc = false
+bench = false
+
+# Declare as standalone workspace to avoid being pulled into parent workspace
+[workspace]
