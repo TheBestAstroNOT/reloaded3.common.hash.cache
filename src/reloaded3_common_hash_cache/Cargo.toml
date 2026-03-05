@@ -18,7 +18,7 @@ c-exports = []
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dev-dependencies]
-criterion = "0.7.0"
+criterion = "0.8.2"
 
 
 # Benchmark Stuff
