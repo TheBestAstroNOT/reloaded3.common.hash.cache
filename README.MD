@@ -1,50 +1,6 @@
-# reloaded3_common_hash_cache
+# reloaded3.common.hash.cache
 
-## Additional Setup Required!!
-
-<!-- DELETE THIS SECTION AFTER COMPLETING SETUP -->
-
-Additional setup might be required.
-Once you do the stuff under this text, delete this section.
-
-### Code Coverage
-To setup code coverage for this project:
-
-1. Go to [Codecov][codecov], add your project.
-2. Go to [Settings -> Secrets and variables -> Actions][gh-actions-secrets] in your repo and add a repository secret named `CODECOV_TOKEN`.
-3. Do the same in [Settings -> Secrets and variables -> Dependabot][gh-actions-dependabot].
-
-The instructions on the Codecov page will provide the token to use.
-
-### Setup Documentation
-
-Before you make your first commit to GitHub, you'll need to go to [Settings -> Pages][gh-pages] and set
-`Source` to `GitHub Actions` for the documentation builds to work.
-
-
-
-
-### Enable Auto-Delete Merged Branches
-
-Enable automatic deletion of merged branches:
-
-```bash
-gh repo edit --delete-branch-on-merge
-```
-
-Or via UI: **Settings > General > check "Automatically delete head branches"**
-
-### Fill in README Documentation
-
-This repository uses a two-level README structure:
-
-| File | Purpose | What to Write |
-|------|---------|---------------|
-| `README.MD` (this file) | GitHub landing page | Project overview, quick start example, badges |
-| [`src/reloaded3_common_hash_cache/README.MD`](./src/reloaded3_common_hash_cache/README.MD) | crates.io page | Detailed features, installation, comprehensive usage examples |
-
------------------------
-
+[![codecov](https://codecov.io/gh/TheBestAstroNOT/reloaded3.common.hash.cache/graph/badge.svg?token=V10K7NY576)](https://codecov.io/gh/TheBestAstroNOT/reloaded3.common.hash.cache)
 [![Crates.io](https://img.shields.io/crates/v/reloaded3_common_hash_cache.svg)](https://crates.io/crates/reloaded3_common_hash_cache)
 [![Docs.rs](https://docs.rs/reloaded3_common_hash_cache/badge.svg)](https://docs.rs/reloaded3_common_hash_cache)
 [![CI](https://github.com/TheBestAstroNOT/reloaded3_common_hash_cache/actions/workflows/rust.yml/badge.svg)](https://github.com/TheBestAstroNOT/reloaded3_common_hash_cache/actions)
