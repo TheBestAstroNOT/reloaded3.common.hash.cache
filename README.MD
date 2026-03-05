@@ -35,7 +35,7 @@ We welcome contributions! See the [Contributing Guide](https://reloaded-project.
 
 ## License
 
-Licensed under [](./LICENSE).
+Licensed under [GPLv3](./LICENSE).
 
 [codecov]: https://app.codecov.io
 [gh-actions-secrets]: https://github.com/TheBestAstroNOT/reloaded3_common_hash_cache/settings/secrets/actions
