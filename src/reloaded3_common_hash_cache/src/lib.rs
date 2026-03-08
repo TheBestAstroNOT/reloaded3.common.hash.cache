@@ -4,6 +4,8 @@
 extern crate std;
 #[cfg(feature = "c-exports")]
 pub mod exports;
+pub mod types;
+pub mod reader;
 
 #[cfg(test)]
 mod tests {
