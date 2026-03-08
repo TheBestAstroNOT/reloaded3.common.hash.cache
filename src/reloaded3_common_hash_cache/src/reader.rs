@@ -16,31 +16,45 @@ impl<S: Source> HashCacheReader<S> {
     pub fn new(source: S) -> Result<Self, ParseResult> {
         let mut raw_bytes = source.as_slice();
         let raw_header = u64::from_le_bytes(raw_bytes[0..8].try_into().unwrap());
+
+        //Remove the header from the slice to reduce the amount of addition we have to do later on
         raw_bytes = &raw_bytes[8..];
+
+        //Get header from the read bits
         let header = HeaderV1::from_bits(raw_header);
+
+        //Get the number of entries from the header
         let count = header.number_of_entries() as usize;
+
+        //Safety check for EOF
         if raw_bytes.len() < count * size_of::<u64>() * 4 {
             return Err(ParseResult::EOF);
         }
+
+        //Get a u64 array of relative path hashes for each file
         let path_hashes: &[u64] = match try_cast_slice(&raw_bytes[count * size_of::<u64>() * 2 .. count * size_of::<u64>() * 3]) {
             Ok(slice) => slice,
             Err(_) => return Err(ParseResult::SliceConversionFailed),
         };
-        if(header.flag_A()){
-            //IMPLEMENT PATHS SECTION
+
+        //Check if the flag for paths section is enabled or not
+        if header.flag_A() {
+            //TODO: IMPLEMENT PATHS SECTION
         }
-        //Generate a hashtable that holds the index of an item in all arrays sorted by it's relative path hash
+
+        //Generate a hashtable that holds the index of an item in all arrays sorted by its relative path hash
         let mut table = HashTable::new();
-        for index in 0..count {
+        for (index, &hash) in path_hashes.iter().enumerate() {
             table.insert_unique(
-                path_hashes[index] as u64,
-                TableEntry{
-                    key: path_hashes[index],
+                hash,
+                TableEntry {
+                    key: hash,
                     index: EntryIndex::new(index),
-                    path_string_length: 0, //IMPLEMENT PATHS SECTION
-                    path_string_offset: 0 //IMPLEMENT PATHS SECTION
+                    //TODO: IMPLEMENT PATHS SECTION INFORMATION
+                    path_string_length: 0,
+                    path_string_offset: 0,
                 },
-                move |e: &TableEntry| e.key,
+                |e: &TableEntry| e.key,
             );
         }
         Ok(HashCacheReader{
