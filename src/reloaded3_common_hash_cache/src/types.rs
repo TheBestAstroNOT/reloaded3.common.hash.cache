@@ -81,5 +81,6 @@ pub struct TableEntry{
 
 pub enum ParseResult{
     EOF,
-    SliceConversionFailed
+    SliceConversionFailed,
+    IndexExceedsBounds
 }

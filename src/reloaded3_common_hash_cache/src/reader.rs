@@ -1,4 +1,4 @@
-use bytemuck::{try_cast_slice, cast_slice};
+use bytemuck::try_cast_slice;
 use crate::types::{HeaderV1, EntryIndex, TableEntry, ParseResult, FILETIME};
 use hashbrown::HashTable;
 
@@ -12,6 +12,22 @@ pub struct HashCacheReader<S: Source>{
 }
 
 impl<S: Source> HashCacheReader<S> {
+    fn get_section(&self, index: usize) -> Result<&[u64], ParseResult> {
+        if index > 4 {
+            return Err(ParseResult::IndexExceedsBounds);
+        }
+        let base = &self.source.as_slice()[8..];
+        let number_of_entries = self.header.number_of_entries() as usize;
+        let length = number_of_entries * size_of::<u64>();
+        //We take section + 1 for zero indexing
+        let start = length * index;
+        let end = start + length;
+        if base.len() < end {
+            return Err(ParseResult::EOF);
+        }
+        try_cast_slice(&base[start..end]).map_err(|_| ParseResult::SliceConversionFailed)
+    }
+
     /// Creates a new HashCacheReader instance from a source
     pub fn new(source: S) -> Result<Self, ParseResult> {
         let mut raw_bytes = source.as_slice();
@@ -31,7 +47,7 @@ impl<S: Source> HashCacheReader<S> {
             return Err(ParseResult::EOF);
         }
 
-        //Get a u64 array of relative path hashes for each file
+        //Get an u64 array of relative path hashes for each file
         let path_hashes: &[u64] = match try_cast_slice(&raw_bytes[count * size_of::<u64>() * 2 .. count * size_of::<u64>() * 3]) {
             Ok(slice) => slice,
             Err(_) => return Err(ParseResult::SliceConversionFailed),
@@ -77,18 +93,34 @@ impl<S: Source> HashCacheReader<S> {
     /// Finds an entry by path hash and returns a wrapper around its index
     pub fn find_by_path_hash(&self, path_hash: u64) -> Option<EntryIndex> {self.table.find(path_hash, |entry| entry.key == path_hash).map(|e| e.index)}
 
-    //TODO: replace cast_slice with try_cast_slice to prevent panics
-    pub fn partial_hash(&self, entry: EntryIndex) -> u64 {cast_slice(&self.source.as_slice()[8..][0..self.header.number_of_entries() as usize * size_of::<u64>()])[entry.get()]}
-
+    pub fn partial_hash(&self, entry: EntryIndex) -> Result<u64, ParseResult> {
+        match self.get_section(0){
+            Ok(section) => Ok(section[entry.get()]),
+            Err(parse_result_propagate) => Err(parse_result_propagate),
+        }
+    }
 
     /// Gets the full hash for a file using an EntryIndex
-    pub fn full_hash(&self, entry: EntryIndex) -> u64 {cast_slice(&self.source.as_slice()[8..][self.header.number_of_entries() as usize * size_of::<u64>()..self.header.number_of_entries() as usize * size_of::<u64>() * 2])[entry.get()]}
+    pub fn full_hash(&self, entry: EntryIndex) -> Result<u64, ParseResult> {
+        match self.get_section(1){
+            Ok(section) => Ok(section[entry.get()]),
+            Err(parse_result_propagate) => Err(parse_result_propagate),
+        }
+    }
 
     /// Gets the path hash for a file using an EntryIndex
-    pub fn path_hash(&self, entry: EntryIndex) -> u64 {cast_slice(&self.source.as_slice()[8..][self.header.number_of_entries() as usize * size_of::<u64>() * 2..self.header.number_of_entries() as usize * size_of::<u64>() * 3])[entry.get()]}
+    pub fn path_hash(&self, entry: EntryIndex) -> Result<u64, ParseResult> {
+        match self.get_section(2){
+            Ok(section) => Ok(section[entry.get()]),
+            Err(parse_result_propagate) => Err(parse_result_propagate),
+        }
+    }
 
     /// Gets the last modified time for a file using an EntryIndex
-    pub fn last_modified(&self, entry: EntryIndex) -> FILETIME {cast_slice(&self.source.as_slice()[8..][self.header.number_of_entries() as usize * size_of::<u64>() * 3..self.header.number_of_entries() as usize * size_of::<u64>() * 4])[entry.get()]}
-
-
+    pub fn last_modified(&self, entry: EntryIndex) -> Result<FILETIME, ParseResult> {
+        match self.get_section(2){
+            Ok(section) => Ok(section[entry.get()]),
+            Err(parse_result_propagate) => Err(parse_result_propagate),
+        }
+    }
 }
