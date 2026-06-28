@@ -6,6 +6,7 @@ extern crate std;
 pub mod exports;
 pub mod types;
 pub mod reader;
+pub mod writer;
 
 #[cfg(test)]
 mod tests {

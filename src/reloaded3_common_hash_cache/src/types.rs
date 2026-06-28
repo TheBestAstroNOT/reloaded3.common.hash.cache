@@ -1,3 +1,4 @@
+use std::string::String;
 use bitfields::bitfield;
 
 const EPOCH_DIFFERENCE: i64 = 11_644_473_600;
@@ -37,11 +38,12 @@ fn timespec_to_windows_timestamp(seconds: i64, nanoseconds: u32) -> i64 {
     second_ticks + nano_ticks + epoch_diff_ticks
 }
 
-pub struct FileInformation{
+#[derive(Clone)]
+pub struct FileInfo {
     pub partial_hash: u64,
     pub full_hash: u64,
     pub path_hash: u64,
-    pub path: u16,
+    pub path: Option<String>,
     pub modify_time: FILETIME
 }
 
@@ -50,11 +52,11 @@ pub struct FileInformation{
 pub struct HeaderV1{
     #[bits(3)]
     version:u8,
-    flag_A:bool,
-    flag_B:bool,
-    flag_C:bool,
-    flag_D:bool,
-    flag_E:bool,
+    flag_a:bool,
+    flag_b:bool,
+    flag_c:bool,
+    flag_d:bool,
+    flag_e:bool,
     #[bits(24)]
     number_of_entries: u32,
     #[bits(32)]
@@ -79,7 +81,8 @@ pub struct TableEntry{
     pub path_string_length: usize,
 }
 
-pub enum ParseResult{
+#[derive(Debug)]
+pub enum ReaderError {
     EOF,
     SliceConversionFailed,
     IndexExceedsBounds
