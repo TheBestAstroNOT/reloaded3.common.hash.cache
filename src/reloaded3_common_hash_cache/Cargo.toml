@@ -14,7 +14,7 @@ std = []
 # Feature for enabling C library exports.
 c-exports = []
 [dependencies]
-bitfields = "1.0.2"
+bitfields = "3.0.0"
 bytemuck = "1.25.0"
 hashbrown = "0.16.1"
 
